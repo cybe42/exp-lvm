@@ -643,7 +643,7 @@ local function lobotomize_stack(stack, replacedclosures)
 	-- 	--// Else
 	-- 	rawset(rawstack, index, value)
 	-- end})
-	print("called from lobotomy", stack)
+	print("called from lobotomy", stack, replacedclosures)
 end
 
 local function luau_load(module, env, luau_settings)
@@ -675,7 +675,7 @@ local function luau_load(module, env, luau_settings)
 	local function luau_wrapclosure(module, proto, upvals)
 		local function luau_execute(...)
 			local debugging, stack, protos, code, varargs
-			print("FUCKING NIGGERS 4")
+			print("FUCKING NIGGERS 5")
 			if luau_settings.errorHandling then
 				debugging, stack, protos, code, varargs = ... 
 			else 
@@ -1384,6 +1384,7 @@ local function luau_load(module, env, luau_settings)
 		local function wrapped(...)
 			local passed = table_pack(...)
 			local stack = table_create(proto.maxstacksize)
+			lobotomize_stack(stack,replacedclosures)
 			local varargs = {
 				len = 0,
 				list = {},
