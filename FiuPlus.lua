@@ -662,6 +662,7 @@ local function luau_load(module, env, luau_settings)
 				proxy_mt.__newindex = function(nigga, index, value)
 					--// ABSOLUTELY protect internal functions
 					-- print(nigga,index,value)
+					print("__newindex")
 					if type(value) == "function" then
 						--// Hook functions
 						local hookEquivalent = replacedclosures[value]
@@ -675,6 +676,7 @@ local function luau_load(module, env, luau_settings)
 				end
 			
 				proxy_mt.__index = function(_, index)
+					print("__index")
 					if type(value) == "function" then
 						--// Hook functions
 						print("Returned hooked closure!")
