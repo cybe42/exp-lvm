@@ -659,12 +659,12 @@ local function luau_load(module, env, luau_settings)
 				local proxy = newproxy(true)
 				local proxy_mt = getmetatable(proxy)
 			
-				proxy_mt.__newindex = function(_, index, value)
+				proxy_mt.__newindex = function(nigga, index, value)
 					--// ABSOLUTELY protect internal functions
+					-- print(nigga,index,value)
 					if type(value) == "function" then
 						--// Hook functions
 						local hookEquivalent = replacedclosures[value]
-						print("caught hooked func!")
 						if hookEquivalent then
 							value = hookEquivalent
 						end
@@ -675,6 +675,14 @@ local function luau_load(module, env, luau_settings)
 				end
 			
 				proxy_mt.__index = function(_, index)
+					if type(value) == "function" then
+						--// Hook functions
+						print("Returned hooked closure!")
+						local hookEquivalent = replacedclosures[rawstack[index]]
+						if hookEquivalent then
+							return hookEquivalent
+						end
+					end
 					return rawstack[index]
 				end
 			
