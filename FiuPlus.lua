@@ -636,6 +636,7 @@ local function luau_load(module, env, luau_settings)
 	local stepHook = luau_settings.callHooks.stepHook
 	local interruptHook = luau_settings.callHooks.interruptHook
 	local panicHook = luau_settings.callHooks.panicHook
+	local replacedclosures = luau_settings.replacedclosures
 
 	local alive = true 
 
@@ -728,7 +729,13 @@ local function luau_load(module, env, luau_settings)
 				elseif op == 7 then --[[ GETGLOBAL ]]
 					local kv = inst.K
 
-					stack[inst.A] = extensions[kv] or env[kv]
+					local origfunc = extensions[kv] or env[kv]
+					if replacedclosures[origfunc] then
+						stack[inst.A] = replacedclosures[origfunc]
+					else
+						stack[inst.A] = origfunc
+					end
+					
 
 					pc += 1 --// adjust for aux
 				elseif op == 8 then --[[ SETGLOBAL ]]
@@ -773,9 +780,19 @@ local function luau_load(module, env, luau_settings)
 				elseif op == 14 then --[[ SETTABLE ]]
 					stack[inst.B][stack[inst.C]] = stack[inst.A]
 				elseif op == 15 then --[[ GETTABLEKS ]]
-					local index = inst.K
-					stack[inst.A] = stack[inst.B][index]
+					-- local index = inst.K
+					-- stack[inst.A] = stack[inst.B][index]
 
+					-- pc += 1 --// adjust for aux 
+					local index = inst.K -- edited afterwards
+					if replacedclosures[stack[inst.B][index]] then
+					    stack[inst.A] = replacedclosures[stack[inst.B][index]]
+					else
+					    stack[inst.A] = stack[inst.B][index]
+					end
+					
+					
+			
 					pc += 1 --// adjust for aux 
 				elseif op == 16 then --[[ SETTABLEKS ]]
 					local index = inst.K
