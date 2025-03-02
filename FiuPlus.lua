@@ -643,7 +643,7 @@ local function lobotomize_stack(stack, replacedclosures)
 	-- 	--// Else
 	-- 	rawset(rawstack, index, value)
 	-- end})
-	print(stack)
+	print("called from lobotomy", stack)
 end
 
 local function luau_load(module, env, luau_settings)
@@ -675,7 +675,7 @@ local function luau_load(module, env, luau_settings)
 	local function luau_wrapclosure(module, proto, upvals)
 		local function luau_execute(...)
 			local debugging, stack, protos, code, varargs
-			print("FUCKING NIGGERS 3")
+			print("FUCKING NIGGERS 4")
 			if luau_settings.errorHandling then
 				debugging, stack, protos, code, varargs = ... 
 			else 
@@ -729,7 +729,7 @@ local function luau_load(module, env, luau_settings)
 				debugging.name = inst.opname
 
 				pc += 1
-				print(stack)
+				print("from alive",stack)
 				if stepHook then
 					stepHook(stack, debugging, proto, module, upvals)
 				end
