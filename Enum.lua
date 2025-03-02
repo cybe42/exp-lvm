@@ -20,7 +20,7 @@
 	SLVM | By the ASense Team
 ]]
 
-local Types = require(script.Parent:WaitForChild("Types"))
+local Types = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Types.lua"))()
 local EnumList: Types.SLVMEnum = shared.SLVMEnums or {}
 
 --// Lazy Functions
