@@ -22,8 +22,8 @@
 	SLVM | By the ASense Team
 ]]
 
-local Compile = require(script:WaitForChild("Yueliang"))
-local Wrap = require(script:WaitForChild("FiOne"))
+local Compile = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Yueliang.lua"))()
+local Wrap = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/FiOne.lua"))()
 
 return function(source, chunkName, env, slvmrules)
 	local compiled, wrapped = pcall(function()
