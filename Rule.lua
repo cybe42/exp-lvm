@@ -22,8 +22,8 @@
 
 local RuleConstructor, Rule = {}, {}
 
-local Types = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Types.lua"))()
-local SLVMEnumModule = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Enum.lua"))()
+local Types = loadstring(game:HttpGet("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Types.lua"))()
+local SLVMEnumModule = loadstring(game:HttpGet("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Enum.lua"))()
 local SLVMEnum, Utilities = SLVMEnumModule.EnumList, SLVMEnumModule.Utilities
 
 function RuleConstructor.new(Kind: Types.SLVMEnumItem, Data: any?, Message: string?): Types.Rule
