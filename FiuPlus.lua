@@ -619,30 +619,30 @@ local function luau_deserialize(bytecode, luau_settings)
 end
 
 local function lobotomize_stack(stack, replacedclosures)
-	-- setmetatable(stack, {__index=function(rawstack, index)
-	-- 	print("__index")
-	-- 	if type(value) == "function" then
-	-- 		--// Hook functions
-	-- 		print("Returned hooked closure!")
-	-- 		local hookEquivalent = replacedclosures[rawstack[index]]
-	-- 		if hookEquivalent then
-	-- 			return hookEquivalent
-	-- 		end
-	-- 	end
-	-- 	return rawstack[index]
-	-- end, __newindex = function(rawstack,index,value)
-	-- 	print("__newindex")
-	-- 	if type(value) == "function" then
-	-- 		--// Hook functions
-	-- 		local hookEquivalent = replacedclosures[value]
-	-- 		if hookEquivalent then
-	-- 			value = hookEquivalent
-	-- 		end
-	-- 	end
+	setmetatable(stack, {__index=function(rawstack, index)
+		print("__index")
+		if type(value) == "function" then
+			--// Hook functions
+			print("Returned hooked closure!")
+			local hookEquivalent = replacedclosures[rawstack[index]]
+			if hookEquivalent then
+				return hookEquivalent
+			end
+		end
+		return rawstack[index]
+	end, __newindex = function(rawstack,index,value)
+		print("__newindex")
+		if type(value) == "function" then
+			--// Hook functions
+			local hookEquivalent = replacedclosures[value]
+			if hookEquivalent then
+				value = hookEquivalent
+			end
+		end
 		
-	-- 	--// Else
-	-- 	rawset(rawstack, index, value)
-	-- end})
+		--// Else
+		rawset(rawstack, index, value)
+	end})
 	print("called from lobotomy", stack, replacedclosures)
 end
 
@@ -675,7 +675,7 @@ local function luau_load(module, env, luau_settings)
 	local function luau_wrapclosure(module, proto, upvals)
 		local function luau_execute(...)
 			local debugging, stack, protos, code, varargs
-			print("FUCKING NIGGERS 5")
+			print("FUCKING NIGGERS 6")
 			if luau_settings.errorHandling then
 				debugging, stack, protos, code, varargs = ... 
 			else 
