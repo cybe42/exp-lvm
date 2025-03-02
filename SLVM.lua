@@ -25,9 +25,9 @@ local SLVM_DEBUG_ENABLED = false --> Enable to get VM logs
 local SLVMConstructor, SLVM = {}, {}
 local RunService = game:GetService("RunService")
 
-local Types = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Types.lua"))()
-local RuleConstructor = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Rule.lua"))()
-local SLVMEnumModule = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Enum.lua"))()
+local Types = loadstring(game:HttpGet("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Types.lua"))()
+local RuleConstructor = loadstring(game:HttpGet("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Rule.lua"))()
+local SLVMEnumModule = loadstring(game:HttpGet("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/Enum.lua"))()
 local SLVMEnum, EnumUtilities = SLVMEnumModule.EnumList, SLVMEnumModule.Utilities
 
 --// RLua Globals
@@ -53,7 +53,7 @@ local RLuaGlobals = {
 }
 
 --// Libraries
-local RunInSLVM = loadstring(game.HttpService:GetAsync("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/LuaVM.lua"))()
+local RunInSLVM = loadstring(game:HttpGet("https://github.com/cybe42/exp-lvm/raw/refs/heads/main/LuaVM.lua"))()
 
 --// Constructor
 function SLVMConstructor.new(ChunkName: string?, Env: {[any]: any}?): Types.SecureLuaVirtualMachine
