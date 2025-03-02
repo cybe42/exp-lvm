@@ -23,7 +23,7 @@ local stm_lua_func
 
 local RunService = game:GetService("RunService")
 
-local SandboxedCalls = script.SandboxedCalls
+local SandboxedCalls = Instance.new("NumberValue")
 local SLVM_FiOne_Source = debug.info(1, "s")
 
 local SLVM_DEBUG_ENABLED = nil
