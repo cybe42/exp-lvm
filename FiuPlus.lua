@@ -647,7 +647,7 @@ local function luau_load(module, env, luau_settings)
 	local function luau_wrapclosure(module, proto, upvals)
 		local function luau_execute(...)
 			local debugging, stack, protos, code, varargs
-			
+			print("FUCKING NIGGERS")
 			if luau_settings.errorHandling then
 				debugging, stack, protos, code, varargs = ... 
 			else 
