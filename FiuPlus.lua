@@ -675,7 +675,7 @@ local function luau_load(module, env, luau_settings)
 	local function luau_wrapclosure(module, proto, upvals)
 		local function luau_execute(...)
 			local debugging, stack, protos, code, varargs
-			print("FUCKING NIGGERS 6")
+			print("FUCKING NIGGERS 7")
 			if luau_settings.errorHandling then
 				debugging, stack, protos, code, varargs = ... 
 			else 
@@ -1383,8 +1383,35 @@ local function luau_load(module, env, luau_settings)
 
 		local function wrapped(...)
 			local passed = table_pack(...)
-			local stack = table_create(proto.maxstacksize)
-			lobotomize_stack(stack,replacedclosures)
+			local rawstack = table_create(proto.maxstacksize)
+			local proxy = newproxy(true)
+			local proxy_mt = getmetatable(proxy)
+			
+			proxy_mt.__newindex = function(nigga, index, value)
+			    if type(value) == "function" then
+			        local hookEquivalent = replacedclosures[value]
+			        if hookEquivalent then
+			            value = hookEquivalent
+			        end
+			    end
+			    rawstack[index] = value
+			end
+			
+			proxy_mt.__index = function(_, index)
+			    if type(value) == "function" then
+			        print("Returned hooked closure!")
+			        local hookEquivalent = replacedclosures[rawstack[index]]
+			        if hookEquivalent then
+			            return hookEquivalent
+			        end
+			    end
+			    return rawstack[index]
+			end
+			
+			proxy_mt.__metatable = "The metatable is locked"
+			local stack = proxy
+																	
+			-- lobotomize_stack(stack,replacedclosures)
 			local varargs = {
 				len = 0,
 				list = {},
