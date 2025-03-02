@@ -619,30 +619,31 @@ local function luau_deserialize(bytecode, luau_settings)
 end
 
 local function lobotomize_stack(stack, replacedclosures)
-	setmetatable(stack, {__index=function(rawstack, index)
-		print("__index")
-		if type(value) == "function" then
-			--// Hook functions
-			print("Returned hooked closure!")
-			local hookEquivalent = replacedclosures[rawstack[index]]
-			if hookEquivalent then
-				return hookEquivalent
-			end
-		end
-		return rawstack[index]
-	end, __newindex = function(rawstack,index,value)
-		print("__newindex")
-		if type(value) == "function" then
-			--// Hook functions
-			local hookEquivalent = replacedclosures[value]
-			if hookEquivalent then
-				value = hookEquivalent
-			end
-		end
+	-- setmetatable(stack, {__index=function(rawstack, index)
+	-- 	print("__index")
+	-- 	if type(value) == "function" then
+	-- 		--// Hook functions
+	-- 		print("Returned hooked closure!")
+	-- 		local hookEquivalent = replacedclosures[rawstack[index]]
+	-- 		if hookEquivalent then
+	-- 			return hookEquivalent
+	-- 		end
+	-- 	end
+	-- 	return rawstack[index]
+	-- end, __newindex = function(rawstack,index,value)
+	-- 	print("__newindex")
+	-- 	if type(value) == "function" then
+	-- 		--// Hook functions
+	-- 		local hookEquivalent = replacedclosures[value]
+	-- 		if hookEquivalent then
+	-- 			value = hookEquivalent
+	-- 		end
+	-- 	end
 		
-		--// Else
-		rawstack[index] = value
-	end})
+	-- 	--// Else
+	-- 	rawset(rawstack, index, value)
+	-- end})
+	print(stack)
 end
 
 local function luau_load(module, env, luau_settings)
@@ -728,7 +729,7 @@ local function luau_load(module, env, luau_settings)
 				debugging.name = inst.opname
 
 				pc += 1
-
+				print(stack)
 				if stepHook then
 					stepHook(stack, debugging, proto, module, upvals)
 				end
