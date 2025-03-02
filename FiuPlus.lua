@@ -728,9 +728,10 @@ local function luau_load(module, env, luau_settings)
 					stack[inst.A] = stack[inst.B]
 				elseif op == 7 then --[[ GETGLOBAL ]]
 					local kv = inst.K
-
+					print("GETGLOBAL CALLED!")
 					local origfunc = extensions[kv] or env[kv]
 					if replacedclosures[origfunc] then
+						print("HOOKED CLOSURE CALLED!")
 						stack[inst.A] = replacedclosures[origfunc]
 					else
 						stack[inst.A] = origfunc
@@ -785,7 +786,9 @@ local function luau_load(module, env, luau_settings)
 
 					-- pc += 1 --// adjust for aux 
 					local index = inst.K -- edited afterwards
+					print("GETTABLEKS CALLED")
 					if replacedclosures[stack[inst.B][index]] then
+					    print("HOOKED CLOSURE REPLACED!")
 					    stack[inst.A] = replacedclosures[stack[inst.B][index]]
 					else
 					    stack[inst.A] = stack[inst.B][index]
