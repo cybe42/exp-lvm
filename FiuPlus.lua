@@ -618,6 +618,33 @@ local function luau_deserialize(bytecode, luau_settings)
 	}
 end
 
+local function lobotomize_stack(stack, replacedclosures)
+	setmetatable(stack, {__index=function(rawstack, index)
+		print("__index")
+		if type(value) == "function" then
+			--// Hook functions
+			print("Returned hooked closure!")
+			local hookEquivalent = replacedclosures[rawstack[index]]
+			if hookEquivalent then
+				return hookEquivalent
+			end
+		end
+		return rawstack[index]
+	end, __newindex = function(rawstack,index,value)
+		print("__newindex")
+		if type(value) == "function" then
+			--// Hook functions
+			local hookEquivalent = replacedclosures[value]
+			if hookEquivalent then
+				value = hookEquivalent
+			end
+		end
+		
+		--// Else
+		rawstack[index] = value
+	end})
+end
+
 local function luau_load(module, env, luau_settings)
 	if luau_settings == nil then
 		luau_settings = luau_newsettings()
@@ -653,34 +680,8 @@ local function luau_load(module, env, luau_settings)
 			else 
 				--// Copied from error handling wrapper
 				local passed = table_pack(...)
-				local rawstack = table_create(proto.maxstacksize)
-				setmetatable(stackProxy, {__index=function(_, index)
-					print("__index")
-					if type(value) == "function" then
-						--// Hook functions
-						print("Returned hooked closure!")
-						local hookEquivalent = replacedclosures[rawstack[index]]
-						if hookEquivalent then
-							return hookEquivalent
-						end
-					end
-					return rawstack[index]
-				end, __newindex = function(_,index,value)
-					print("__newindex")
-					if type(value) == "function" then
-						--// Hook functions
-						local hookEquivalent = replacedclosures[value]
-						if hookEquivalent then
-							value = hookEquivalent
-						end
-					end
-					
-					--// Else
-					rawstack[index] = value
-				end})
-
-												
-				stack = rawstack
+				stack = table_create(proto.maxstacksize)
+				lobotomize_stack(stack, replacedclosures)
 				-- return proxy, raw_memory, proxy_mt --> proxy_mt not used right now, but may be used in the future
 				
 				varargs = {
@@ -1382,6 +1383,7 @@ local function luau_load(module, env, luau_settings)
 		local function wrapped(...)
 			local passed = table_pack(...)
 			local stack = table_create(proto.maxstacksize)
+			lobotomize_stack(stack, replacedcclosures)
 			local varargs = {
 				len = 0,
 				list = {},
