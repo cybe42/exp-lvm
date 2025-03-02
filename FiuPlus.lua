@@ -653,7 +653,35 @@ local function luau_load(module, env, luau_settings)
 			else 
 				--// Copied from error handling wrapper
 				local passed = table_pack(...)
-				stack = table_create(proto.maxstacksize)
+				local rawstack = table_create(proto.maxstacksize)
+
+				-- local raw_memory = table.create(max_stack)
+				local proxy = newproxy(true)
+				local proxy_mt = getmetatable(proxy)
+			
+				proxy_mt.__newindex = function(_, index, value)
+					--// ABSOLUTELY protect internal functions
+					if type(value) == "function" then
+						--// Hook functions
+						local hookEquivalent = replacedclosures[value]
+						print("caught hooked func!")
+						if hookEquivalent then
+							value = hookEquivalent
+						end
+					end
+					
+					--// Else
+					rawstack[index] = value
+				end
+			
+				proxy_mt.__index = function(_, index)
+					return rawstack[index]
+				end
+			
+				proxy_mt.__metatable = "The metatable is locked"
+				stack = proxy
+				-- return proxy, raw_memory, proxy_mt --> proxy_mt not used right now, but may be used in the future
+				
 				varargs = {
 					len = 0,
 					list = {},
@@ -675,6 +703,8 @@ local function luau_load(module, env, luau_settings)
 				protos = proto.protos 
 				code = proto.code
 			end 
+
+			
 
 			local top, pc, open_upvalues, generalized_iterators = -1, 1, setmetatable({}, {__mode = "vs"}), setmetatable({}, {__mode = "ks"})
 			local constants = proto.k
